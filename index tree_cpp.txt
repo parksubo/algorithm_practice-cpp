@@ -1,0 +1,47 @@
+// 팬윅트리
+#include <iostream>
+#define MAX 16
+
+using namespace std;
+
+int tree[MAX+1];
+
+int sum(int i) {
+	int result = 0;
+	while (i > 0) {
+		result += tree[i];
+		i -= (i & -i);
+	}
+	return result;
+}
+
+void update(int i, int diff) {
+	while (i <= MAX) {
+		tree[i] += diff;
+		i += (i & -i);
+	}
+}
+
+
+int getSection(int start, int end) {
+	return sum(end) - sum(start - 1);
+}
+
+
+
+int main() {
+	for (int i = 1; i <= MAX; i++) update(i, i);
+	
+	cout << "2~4 구간합 : " << getSection(2, 4) << endl;
+	cout << "3~11 구간합 : " << getSection(3, 11) << endl;
+
+	update(5, -3);
+	cout << "5번째 값  -3 업데이트" << endl;
+	cout << "2~4 구간합 : " << getSection(2, 4) << endl;
+	cout << "3~11 구간합 : " << getSection(3, 11) << endl;
+	
+
+
+
+	return 0;
+}
