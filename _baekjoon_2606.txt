@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+#include <queue>  
+#include <algorithm>
+
+using namespace std;
+
+int n, m; // n : 정점의 개수, m : 이어져있는 노드의 수
+
+vector<bool> visit; // 방문한 노드를 표시하기 위함 
+vector<vector<int>> node; // vector 배열을 받기 위함
+
+int bfs(int start) {
+    int count = 0;
+    queue<int> q;
+    q.push(start);  // 시작점 큐에 넣고
+    visit[start] = true;  // 시작점 방문표시
+
+    while (!q.empty()) {  // 큐가 비어있지 않으면
+        int x = q.front();  // 큐의 front값 x에 저장
+        q.pop(); // 큐에서 front를 pop
+        count++;
+        for (int i = 0; i < node[x].size(); i++) { // 큐의 front였던 노드의 연결점의 개수 만큼 실행 
+            int y = node[x][i];  // front의 i번째 연결 점이
+            if (visit[y] != true) {  // 방문하지 않은 노드라면
+                q.push(y);   // 큐에 해당 노드 push
+                visit[y] = true; //  큐에 해당 노드 방문표시
+            }
+        }
+    }
+    return count;
+}
+
+int main() {
+    int a, b;
+    cin >> n >> m;
+    node.resize(n + 1); // 1번 인덱스에 1번 노드를 위치시키기 위해 n+1 크기로 할당
+    visit = vector<bool>(n + 1, false); // visit를 false로 초기화
+    for (int i = 0; i < m; i++) {
+        cin >> a >> b;
+        node[a].push_back(b);  // 노드는 양방향 노드라고 가정 했음
+        node[b].push_back(a);
+    }
+
+    for (int i = 0; i < node.size(); i++) {  // 노드를 작은 순서대로 정렬
+        sort(node[i].begin(), node[i].end());
+    }
+    
+    cout << bfs(1) - 1;
+
+    return 0;
+}
