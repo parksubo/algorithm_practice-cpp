@@ -1,0 +1,90 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stdlib.h>
+
+using namespace std;
+
+int farm[51][51] = { 0 };		// 땅으로 초기화
+bool visit[51][51] = { false }; // 방문 false로 초기화
+
+int t, m, n, k;	// 테스트케이스 개수, 가로길이, 세로길이, 배추개수
+
+// 상하 좌우
+int dir_x[] = { 0,0,-1,1 };
+int dir_y[] = { 1,-1,0,0 };
+
+
+void bfs(int y, int x) {
+	queue<pair<int, int>> q;
+	q.push(make_pair(y, x));
+	visit[y][x] = true;	// 좌표에 해당하는 곳 방문 표시
+
+	// 큐가 빌 때까지
+	while (!q.empty()) {
+		auto node = q.front();
+		q.pop();
+
+		// 상하좌우 방문
+		for (int i = 0; i < 4; i++) {
+			int next_x = node.second + dir_x[i];
+			int next_y = node.first + dir_y[i];
+
+			// farm 범위를 벗어나지 않으며
+			if (next_x >= 0 && next_x < m &&
+				next_y >= 0 && next_y < n) {
+				// 방문하려는 곳에 배추가 있으며(1), 아직 방문하지 않은 곳이라면
+				if (farm[next_y][next_x] == 1 && visit[next_y][next_x] == false) {
+					visit[next_y][next_x] = true;		// 방문 표시
+					q.push(make_pair(next_y, next_x));	// 큐에 다음 좌표 push
+				}
+			}
+		}
+	}	
+}
+
+int main() {
+	int x, y;	// 배추의 x, y좌표
+	int* bugCount;
+
+	cin >> t;
+	bugCount = (int*)malloc(sizeof(int) * t);	// 테스트케이스만큼 할당
+
+	for (int s = 0; s < t; s++) {
+
+		cin >> m >> n >> k;
+		int count = 0;	 // 케이스 마다 필요한 벌레 수
+
+		for (int i = 0; i < k; i++) {
+			cin >> x >> y;
+			farm[y][x] = 1;
+		}
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				// 방문하려는 곳에 배추가 있으며(1), 아직 방문하지 않은 곳이라면
+				if (farm[i][j] == 1 && visit[i][j] == false) {
+					bfs(i, j);
+					count++;
+				}
+			}
+		}
+		bugCount[s] = count;	   // s번째에 count 저장
+
+		// 다음 테스트를 위해 초기화
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				farm[i][j] = 0;
+				visit[i][j] = false;
+			}
+		}
+	}
+
+	for (int i = 0; i < t; i++) {
+		cout << bugCount[i] << endl;
+	}
+
+	free(bugCount);
+	return 0;
+}
+
