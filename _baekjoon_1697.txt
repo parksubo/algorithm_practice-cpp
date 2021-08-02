@@ -1,0 +1,49 @@
+#include <iostream>
+#include <queue>
+#include <vector>
+
+using namespace std;
+
+#define MAX 100001
+
+bool visit[MAX];
+
+int bfs(int start, int end) {
+	queue<pair<int, int>> q;	// 노드와 count
+	q.push(make_pair(start, 0));
+	visit[start] = true;
+
+	while(!q.empty()) {
+		int node = q.front().first;
+		int count = q.front().second;
+		q.pop();
+
+		if (node == end) return count;
+
+		if (node * 2 < MAX && visit[node * 2] == false) {
+			q.push(make_pair(node * 2, count + 1));
+			visit[node * 2] = true;
+		}
+		if (node + 1 < MAX && visit[node + 1] == false) {
+			q.push(make_pair(node + 1, count + 1));
+			visit[node + 1] = true;
+		}
+		if (node - 1 >= 0 && visit[node - 1] == false) {
+			q.push(make_pair(node - 1, count + 1));
+			visit[node - 1] = true;
+		}
+
+	}
+
+}
+
+
+int main() {
+
+	int n, k;
+	cin >> n >> k;
+
+	cout << bfs(n, k) << endl;
+
+	return 0;
+}
