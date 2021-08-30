@@ -1,0 +1,80 @@
+#include <iostream>
+#include <queue>
+#include <vector>
+
+#define MAX 51
+
+using namespace std;
+
+int w, h;	// 너비, 높이
+
+// 8방향 검사
+int dir_y[8] = {1, 1, 0, -1, -1, -1, 0, 1};
+int dir_x[8] = { 0, 1, 1, 1, 0, -1, -1, -1 };
+
+int map[MAX][MAX];
+bool visit[MAX][MAX];
+
+void init() {
+	for (int i = 0; i < MAX - 1; i++) {
+		for (int j = 0; j < MAX - 1; j++) {
+			visit[i][j] = false;
+		}
+	}
+}
+
+void bfs(int y, int x) {
+	queue<pair<int, int>> q;
+	q.push(make_pair(y, x));
+	visit[y][x] = true;
+
+	while (!q.empty()) {
+		int yy = q.front().first;
+		int xx = q.front().second;
+		q.pop();
+
+		for (int i = 0; i < 8; i++) {
+			int next_y = yy + dir_y[i];
+			int next_x = xx + dir_x[i];
+
+			// 범위 내에서 방문하지 않았다면
+			if (next_y >= 0 && next_x >= 0 && next_y < h && next_x < w) {
+				if (!visit[next_y][next_x] && map[next_y][next_x]) {
+					q.push(make_pair(next_y, next_x));
+					visit[next_y][next_x] = true;
+				}
+			}
+		}
+	}
+}
+
+int main() {
+	int count = 0;
+
+	cin >> w >> h;
+
+	while (w != 0 && h != 0) {
+		
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				cin >> map[i][j];
+			}
+		}
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				if (map[i][j] == 1 && !visit[i][j]) {
+					bfs(i, j);
+					count++;
+				}
+			}
+		}
+		cout << count << endl;
+		init();
+		count = 0;
+		cin >> w >> h;
+	}
+
+
+
+	return 0;
+}
