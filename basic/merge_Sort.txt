@@ -1,0 +1,70 @@
+import java.io.*;
+import java.util.StringTokenizer;
+
+
+public class Main {
+    // 토큰을 저장할 배열
+    private static int[] array = new int[50];
+    // 정렬된 값을 저장할 배열
+    private static int[] sortedArray = new int[50];
+
+    public static void main(String[] args) throws IOException {
+        int arrayIndex = 0;
+        // 파일 입력받아서 line1 테스트 케이스 저장
+        BufferedReader br1 = new BufferedReader(new FileReader("\\C:\\users\\subo0\\IdeaProjects\\Algo_01_201702014_박수보\\hw1_test_case1_Answer28.txt"));
+        while (true) {
+            String line1 = br1.readLine();
+            if (line1 == null) break;
+            else {
+                String str = line1;
+                StringTokenizer stk = new StringTokenizer(str, ",");
+                // 토큰이 존재한다면 토큰을 int로 형변환 하여 저장하고 배열에 push
+                while(stk.hasMoreTokens()){
+                    int temp = Integer.parseInt(stk.nextToken());
+                    array[arrayIndex++] = temp;
+                }
+            }
+
+        }
+        br1.close();
+        // 0부터 arrayIndex - 1까지 sort
+        mergeSort(0, arrayIndex - 1);
+
+
+        for(int i = 0; i < arrayIndex; i++) {
+            System.out.println(array[i]);
+        }
+
+    }
+
+    public static void mergeSort(int left, int right) {
+        if(left < right) {
+            int mid = (left + right) / 2;
+            mergeSort(left, mid);  // 앞부분 분할 작업
+            mergeSort(mid + 1, right); // 뒷부분 분할 작업
+
+            int p = left;       // 앞부분 시작 인덱스
+            int q = mid + 1;    // 뒷부분 시작 인덱스
+            int index = left;   // 정렬된 원소를 저장할 최종 인덱스
+
+            // p 또는 q가 아직 범위안에 있고
+            while(p <= mid || q <= right) {
+                // q는 범위밖이거나 p가 범위 안에서 조건을 만족할때
+                if(q > right || (p <= mid && array[p] < array[q])) {
+                // 더 작은 값을 sortedArray에 집어 넣고 해당 인덱스와 최종 인덱스를 증가
+                    sortedArray[index++] = array[p++];
+                }
+                // 반대의 경우
+                else {
+                    sortedArray[index++] = array[q++];
+                }
+            }
+
+            for(int i = left; i <= right; i++) {
+                array[i] = sortedArray[i];
+            }
+            
+        }
+    }
+
+}
