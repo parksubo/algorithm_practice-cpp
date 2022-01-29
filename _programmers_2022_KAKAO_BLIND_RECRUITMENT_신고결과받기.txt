@@ -1,0 +1,67 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+vector<int> solution(vector<string> id_list, vector<string> report, int k) {
+    vector<int> answer;   
+
+    int len = id_list.size();
+
+    bool isReport[1000][1000] = { false };
+
+    for (int i = 0; i < report.size(); i++) {
+        for (int j = 0; j < report[i].size(); j++) {
+            if (report[i][j] == ' ') {
+                string reporting = report[i].substr(0, j);
+                string reported = report[i].substr(j+1);
+                int ing = 0;
+                int ed = 0;
+                for (int l = 0; l < len; l++) {
+                    // 같으면 0
+                    if (reporting.compare(id_list[l]) == 0) {
+                        ing = l;
+                        break;
+                    }
+                }
+                for (int l = 0; l < len; l++) {
+                    // 같으면 0
+                    if (reported.compare(id_list[l]) == 0) {
+                        ed = l;
+                        break;
+                    }
+                }
+                isReport[ing][ed] = true;
+                break;
+            }
+        }
+    }
+    
+    int reportedCount[1000] = { 0 };
+    for (int i = 0; i < len; i++) {
+        for (int j = 0; j < len; j++) {
+            if (isReport[i][j] == true) {
+                reportedCount[j]++;
+            }
+        }
+    }
+
+    bool guilty[1000] = { false };
+    for (int i = 0; i < len; i++) {
+        if (reportedCount[i] >= k) {
+            guilty[i] = true;
+        }
+    }
+    
+    for (int i = 0; i < len; i++) {
+        int count = 0;
+        for (int j = 0; j < len; j++) {
+            if (isReport[i][j] == true && guilty[j] == true) {
+                count++;
+            }
+        }
+        answer.push_back(count);
+    }
+   
+
+    return answer;
+}
